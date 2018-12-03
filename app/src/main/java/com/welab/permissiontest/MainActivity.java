@@ -1,5 +1,7 @@
 package com.welab.permissiontest;
 
+import android.app.DownloadManager;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -50,6 +52,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if(view.getId() == R.id.setting3) {
             SettingUtil.goSetting3(this);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(new InstallReceiver(), new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
     private void initView() {

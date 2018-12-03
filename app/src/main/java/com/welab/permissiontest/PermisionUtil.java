@@ -18,7 +18,10 @@ public class PermisionUtil {
     private static final String TAG = "pain.xie";
 
     public static void checkContacts(Context context) {
-        check(context, Permission.READ_CONTACTS);
+        // check(context, Permission.WRITE_CALENDAR);
+        String urlStr = "http://welabcdn.wolaidai.com/wolaidai.a_promotion1000.apk";
+
+        new FileDownloadsUtil(context).downloadApkFile(urlStr, "test");
     }
 
     public static void checkLocation(Context context) {
@@ -42,41 +45,34 @@ public class PermisionUtil {
     }
 
     public static void check(final Context context, final String permision) {
-//        if(AndPermission.hasPermissions(context, permision)) {
-//            Toast.makeText(context, permision + "is grant", Toast.LENGTH_SHORT).show();
-//            Log.d(TAG, "check: " + permision + "is grant");
-//        } else {
-            AndPermission.with(context)
-                    .runtime()
-                    .permission(permision)
-                    .onGranted(new Action<List<String>>() {
-                        @Override
-                        public void onAction(List<String> data) {
-                            for(String datum : data) {
-                                Log.d(TAG, "onAction: " + datum);
-                            }
-                            Toast.makeText(context, "onGranted", Toast.LENGTH_SHORT).show();
+        AndPermission.with(context)
+                .runtime()
+                .permission(permision)
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+                        for(String datum : data) {
+                            Log.d(TAG, "onAction: " + datum);
                         }
-                    })
-                    .onDenied(new Action<List<String>>() {
-                        @Override
-                        public void onAction(List<String> data) {
-                            for(String datum : data) {
-                                Log.d(TAG, "onAction: " + datum);
-                            }
-                            Toast.makeText(context, "onDenied", Toast.LENGTH_SHORT).show();
-
-                            if(AndPermission.hasAlwaysDeniedPermission(context, permision)) {
-                                Toast.makeText(context, "hasAlwaysDeniedPermission", Toast
-                                        .LENGTH_SHORT)
-                                        .show();
-                            }
+                        Toast.makeText(context, "onGranted", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> data) {
+                        for(String datum : data) {
+                            Log.d(TAG, "onAction: " + datum);
                         }
+                        Toast.makeText(context, "onDenied", Toast.LENGTH_SHORT).show();
 
-                    })
-                    .start();
-//        }
+                        if(AndPermission.hasAlwaysDeniedPermission(context, permision)) {
+                            Toast.makeText(context, "hasAlwaysDeniedPermission", Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    }
 
+                })
+                .start();
     }
 
 }
