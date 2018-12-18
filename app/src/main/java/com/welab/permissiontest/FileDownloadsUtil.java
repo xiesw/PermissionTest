@@ -2,6 +2,7 @@ package com.welab.permissiontest;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
@@ -127,6 +128,9 @@ public class FileDownloadsUtil {
                         break;
                     case DownloadManager.STATUS_SUCCESSFUL:
                         //完成
+                        if(null!=scheduledExecutorService && !scheduledExecutorService.isShutdown())
+                            scheduledExecutorService.shutdownNow();
+                        installAPK();
                         break;
                     case DownloadManager.STATUS_FAILED:
                         //清除已下载的内容，重新下载
@@ -140,18 +144,21 @@ public class FileDownloadsUtil {
         }
     }
 
-    // private boolean installAPK(String filePath){
-    //     Intent i = new Intent(Intent.ACTION_VIEW);
-    //     File file = new File(filePath);
-    //     if (file.length() > 0 && file.exists() && file.isFile()) {
-    //         Uri contentUri = WlFileProvider.getUri(getReactApplicationContext(), file);
-    //         i.setDataAndType(contentUri,"application/vnd.android.package-archive");
-    //         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    //         i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-    //         getReactApplicationContext().startActivity(i);
-    //         return true;
-    //     }
-    //     return false;
-    // }
+     private void installAPK(){
+         DownloadManager dm = (DownloadManager) mReactContext.getSystemService(Context.DOWNLOAD_SERVICE);
+         DownloadManager.Query query = new DownloadManager.Query().setFilterById(lastDownloadId);
+         Cursor c = dm.query(query);
+         if (c != null) {
+             if (c.moveToFirst()) {
+                 String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
+                 Log.e("pain", fileUri);
+                 Intent i = new Intent(Intent.ACTION_VIEW);
+                 i.setDataAndType(Uri.parse(fileUri), "application/vnd.android.package-archive");
+                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                 mReactContext.startActivity(i);
+             }
+             c.close();
+         }
+     }
 
 }

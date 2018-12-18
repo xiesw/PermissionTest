@@ -33,7 +33,7 @@ public class InstallReceiver extends BroadcastReceiver {
                     String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
                     Log.e(TAG, "onReceive: " + fileUri );
                     // TODO 你可以在这里处理你的文件
-                    installApk(context, fileUri);
+                    // installApk(context, fileUri);
                 }
                 c.close();
             }
@@ -45,7 +45,7 @@ public class InstallReceiver extends BroadcastReceiver {
 
         try {
             Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setDataAndType(Uri.parse(fileUri+"1"), "application/vnd.android.package-archive");
+            i.setDataAndType(Uri.parse(fileUri), "application/vnd.android.package-archive");
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         } catch(Exception e) {

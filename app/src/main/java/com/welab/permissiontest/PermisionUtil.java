@@ -18,10 +18,7 @@ public class PermisionUtil {
     private static final String TAG = "pain.xie";
 
     public static void checkContacts(Context context) {
-        // check(context, Permission.WRITE_CALENDAR);
-        String urlStr = "http://welabcdn.wolaidai.com/wolaidai.a_promotion1000.apk";
-
-        new FileDownloadsUtil(context).downloadApkFile(urlStr, "test");
+        check(context, Permission.WRITE_CONTACTS);
     }
 
     public static void checkLocation(Context context) {
