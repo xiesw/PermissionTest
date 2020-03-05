@@ -1,8 +1,8 @@
 package com.welab.permissiontest;
 
+import android.accounts.NetworkErrorException;
 import android.app.DownloadManager;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
@@ -14,7 +14,13 @@ import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Permission;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -66,14 +72,15 @@ public class FileDownloadsUtil {
     private void download(String apkUrl, String eventName) {
         updateProgressEvent = eventName;
         String fileName = getFileName(apkUrl);
-        downloadManager = (DownloadManager) mReactContext.getSystemService(Context.DOWNLOAD_SERVICE);
+        downloadManager = (DownloadManager) mReactContext.getSystemService(Context
+                .DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(apkUrl));
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
         request.setMimeType("application/vnd.android.package-archive");
         if(!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             return;
         }
-        localFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + fileName;
+        localFilePath = Environment.getDownloadCacheDirectory() + "/" + fileName;
         File file = new File(localFilePath);
         if(file.exists()) {
             file.delete();
@@ -81,16 +88,16 @@ public class FileDownloadsUtil {
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
         lastDownloadId = downloadManager.enqueue(request);
         Log.e(TAG, "download: " + lastDownloadId);
-        if(null != scheduledExecutorService && !scheduledExecutorService.isShutdown()) {
-            scheduledExecutorService.shutdownNow();
-        }
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                queryTaskByIdandUpdateView(lastDownloadId);
-            }
-        }, 0, 500, TimeUnit.MILLISECONDS);
+                if(null != scheduledExecutorService && !scheduledExecutorService.isShutdown()) {
+                    scheduledExecutorService.shutdownNow();
+                }
+                scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+                scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+                    @Override
+                    public void run() {
+                        queryTaskByIdandUpdateView(lastDownloadId);
+                    }
+                }, 0, 500, TimeUnit.MILLISECONDS);
     }
 
     private String getFileName(String apkUrl) {
@@ -116,10 +123,13 @@ public class FileDownloadsUtil {
         try {
             cursor = downloadManager.query(query);
             if(null != cursor && cursor.moveToNext()) {
-                size = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-                sizeTotal = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                size = cursor.getString(cursor.getColumnIndex(DownloadManager
+                        .COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                sizeTotal = cursor.getString(cursor.getColumnIndex(DownloadManager
+                        .COLUMN_TOTAL_SIZE_BYTES));
                 int status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
                 Message msg = Message.obtain();
+                Log.e("pain.xie", "queryTaskByIdandUpdateView: " + size);
                 switch(status) {
                     case DownloadManager.STATUS_PAUSED:
                     case DownloadManager.STATUS_PENDING:
@@ -128,7 +138,8 @@ public class FileDownloadsUtil {
                         break;
                     case DownloadManager.STATUS_SUCCESSFUL:
                         //完成
-                        if(null!=scheduledExecutorService && !scheduledExecutorService.isShutdown())
+                        if(null != scheduledExecutorService && !scheduledExecutorService
+                                .isShutdown())
                             scheduledExecutorService.shutdownNow();
                         installAPK();
                         break;
@@ -144,21 +155,148 @@ public class FileDownloadsUtil {
         }
     }
 
-     private void installAPK(){
-         DownloadManager dm = (DownloadManager) mReactContext.getSystemService(Context.DOWNLOAD_SERVICE);
-         DownloadManager.Query query = new DownloadManager.Query().setFilterById(lastDownloadId);
-         Cursor c = dm.query(query);
-         if (c != null) {
-             if (c.moveToFirst()) {
-                 String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
-                 Log.e("pain", fileUri);
-                 Intent i = new Intent(Intent.ACTION_VIEW);
-                 i.setDataAndType(Uri.parse(fileUri), "application/vnd.android.package-archive");
-                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                 mReactContext.startActivity(i);
-             }
-             c.close();
-         }
-     }
+    private void installAPK() {
+        DownloadManager dm = (DownloadManager) mReactContext.getSystemService(Context
+                .DOWNLOAD_SERVICE);
+        DownloadManager.Query query = new DownloadManager.Query().setFilterById(lastDownloadId);
+        Cursor c = dm.query(query);
+        if(c != null) {
+            if(c.moveToFirst()) {
+                String filePath = c.getString(c.getColumnIndexOrThrow(DownloadManager
+                        .COLUMN_LOCAL_URI));
+                Log.e("pain.xie", "installAPK: " + filePath);
+                AndPermission.with(mReactContext)
+                        .install()
+                        .file(new File(filePath.replace("file://", "")))
+                        .start();
+            }
+            c.close();
+        }
+//        DownloadManager dm = (DownloadManager) mReactContext.getSystemService(Context
+//                .DOWNLOAD_SERVICE);
+//        DownloadManager.Query query = new DownloadManager.Query().setFilterById(lastDownloadId);
+//        Cursor c = dm.query(query);
+//        if(c != null) {
+//            if(c.moveToFirst()) {
+//                String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager
+//                        .COLUMN_LOCAL_URI));
+//                Log.e("pain", fileUri);
+//                Intent i = new Intent(Intent.ACTION_VIEW);
+//                i.setDataAndType(Uri.parse(fileUri), "application/vnd.android.package-archive");
+//                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                mReactContext.startActivity(i);
+//            }
+//            c.close();
+//        }
+    }
+
+
+    public static void startDownload(Context context) {
+        String downloadUrl = "http://dl.yzcdn.cn/koudaitong.apk";
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context
+                .DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
+        request.setTitle("app-release.apk");
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+        request.setAllowedOverRoaming(false);
+        request.setMimeType("application/vnd.android.package-archive");
+        request.setNotificationVisibility(DownloadManager.Request
+                .VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+        //设置文件存放路径
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "app-release" +
+                ".apk");
+        downloadManager.enqueue(request);
+    }
+
+    public static String post(String url, String content) {
+        HttpURLConnection conn = null;
+        try {
+            // 创建一个URL对象
+            URL mURL = new URL(url);
+            // 调用URL的openConnection()方法,获取HttpURLConnection对象
+            conn = (HttpURLConnection) mURL.openConnection();
+
+            conn.setRequestMethod("POST");// 设置请求方法为post
+            conn.setReadTimeout(5000);// 设置读取超时为5秒
+            conn.setConnectTimeout(10000);// 设置连接网络超时为10秒
+            conn.setDoOutput(true);// 设置此方法,允许向服务器输出内容
+
+            // post请求的参数
+            String data = content;
+            // 获得一个输出流,向服务器写数据,默认情况下,系统不允许向服务器输出内容
+            OutputStream out = conn.getOutputStream();// 获得一个输出流,向服务器写数据
+            out.write(data.getBytes());
+            out.flush();
+            out.close();
+
+            int responseCode = conn.getResponseCode();// 调用此方法就不必再使用conn.connect()方法
+            if (responseCode == 200) {
+
+                InputStream is = conn.getInputStream();
+                String response = getStringFromInputStream(is);
+                return response;
+            } else {
+                throw new NetworkErrorException("response status is "+responseCode);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                conn.disconnect();// 关闭连接
+            }
+        }
+
+        return null;
+    }
+
+    public static String get(String url) {
+        HttpURLConnection conn = null;
+        try {
+            // 利用string url构建URL对象
+            URL mURL = new URL(url);
+            conn = (HttpURLConnection) mURL.openConnection();
+
+            conn.setRequestMethod("GET");
+            conn.setReadTimeout(5000);
+            conn.setConnectTimeout(10000);
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+
+                InputStream is = conn.getInputStream();
+                String response = getStringFromInputStream(is);
+                return response;
+            } else {
+                throw new NetworkErrorException("response status is "+responseCode);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+
+        return null;
+    }
+
+    private static String getStringFromInputStream(InputStream is)
+            throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        // 模板代码 必须熟练
+        byte[] buffer = new byte[1024];
+        int len = -1;
+        while ((len = is.read(buffer)) != -1) {
+            os.write(buffer, 0, len);
+        }
+        is.close();
+        String state = os.toString();// 把流中的数据转换成字符串,采用的编码是utf-8(模拟器默认编码)
+        os.close();
+        return state;
+    }
 
 }

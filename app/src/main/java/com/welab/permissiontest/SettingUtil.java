@@ -8,13 +8,13 @@ import android.widget.Toast;
 
 import com.hjq.permissions.XXPermissions;
 
+
 /**
  * Created by xieshangwu on 2018/8/6
  */
 public class SettingUtil {
 
     /**
-     *
      * @param context
      */
     public static void goSetting(Context context) {
@@ -31,6 +31,7 @@ public class SettingUtil {
 
     /**
      * XXPermissions ok
+     *
      * @param context
      */
     public static void goSetting1(Context context) {
@@ -51,6 +52,7 @@ public class SettingUtil {
 
     /**
      * PermissionPageUtils ok
+     *
      * @param context
      */
     public static void goSetting3(Context context) {

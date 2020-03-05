@@ -19,14 +19,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected Button mSetting1;
     protected Button mSetting2;
     protected Button mSetting3;
+    protected Button mclick1;
+    protected Button mclick2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         initView();
-
-
     }
 
     @Override
@@ -51,13 +51,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             SettingUtil.goSetting2(this);
         } else if(view.getId() == R.id.setting3) {
             SettingUtil.goSetting3(this);
+        } else if(view.getId() == R.id.click1) {
+            FileDownloadsUtil util = new FileDownloadsUtil(this);
+            util.downloadApkFile("https://welabcdn.oss-cn-shenzhen.aliyuncs.com/wolaidai.a_promotion1000.apk", "test");
+        } else if(view.getId() == R.id.click2) {
+            FileDownloadsUtil.startDownload(this);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver(new InstallReceiver(), new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        registerReceiver(new InstallReceiver(), new IntentFilter(DownloadManager
+                .ACTION_DOWNLOAD_COMPLETE));
     }
 
     private void initView() {
@@ -81,5 +87,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSetting2.setOnClickListener(MainActivity.this);
         mSetting3 = (Button) findViewById(R.id.setting3);
         mSetting3.setOnClickListener(MainActivity.this);
+        mclick1 = (Button) findViewById(R.id.click1);
+        mclick1.setOnClickListener(MainActivity.this);
+        mclick2 = (Button) findViewById(R.id.click2);
+        mclick2.setOnClickListener(MainActivity.this);
+
     }
 }

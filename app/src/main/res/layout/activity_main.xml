@@ -67,4 +67,16 @@
         android:text="进入权限页3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+    
+    <Button
+        android:id="@+id/click1"
+        android:text="下载apk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    
+    <Button
+        android:id="@+id/click2"
+        android:text="点击2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

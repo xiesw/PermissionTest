@@ -33,7 +33,7 @@ public class InstallReceiver extends BroadcastReceiver {
                     String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
                     Log.e(TAG, "onReceive: " + fileUri );
                     // TODO 你可以在这里处理你的文件
-                    // installApk(context, fileUri);
+                     installApk(context, fileUri);
                 }
                 c.close();
             }
