@@ -30,10 +30,6 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.io.File;
@@ -44,6 +40,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 /**
  * Desc:Android 6.0运行时权限处理工具类
@@ -336,7 +337,7 @@ public class PermissionUtils {
     }
 
     private static void showPermissionManagerDialog(final Context context, String str) {
-        new android.support.v7.app.AlertDialog.Builder(context, R.style.Theme_dialog_self).setTitle("获取" + str + "权限被禁用")
+        new androidx.appcompat.app.AlertDialog.Builder(context, R.style.Theme_dialog_self).setTitle("获取" + str + "权限被禁用")
                 .setMessage("请在 设置-应用管理-" + context.getString(R.string.app_name) + "-权限管理 (将" + str + "权限打开)")
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
