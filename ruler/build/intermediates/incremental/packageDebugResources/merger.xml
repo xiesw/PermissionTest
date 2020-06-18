@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/xieshangwu/code/PermissionTest/ruler/src/main/res"/><source path="/Users/xieshangwu/code/PermissionTest/ruler/build/generated/res/rs/debug"/><source path="/Users/xieshangwu/code/PermissionTest/ruler/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/xieshangwu/code/PermissionTest/ruler/src/main/res"><file path="/Users/xieshangwu/code/PermissionTest/ruler/src/main/res/values/strings.xml" qualifiers=""><string name="app_name">RNScrollRuler</string></file><file path="/Users/xieshangwu/code/PermissionTest/ruler/src/main/res/values/attrs.xml" qualifiers=""><declare-styleable name="RulerView">
+        <attr format="dimension" name="rulerHeight"/>               
+        <attr format="dimension" name="rulerToResultgap"/>          
+        <attr format="dimension" name="scaleGap"/>                  
+        <attr format="integer" name="scaleCount"/>                  
+        <attr format="integer" name="firstScale"/>                    
+        <attr format="integer" name="maxScale"/>                    
+        <attr format="integer" name="minScale"/>                    
+        <attr format="color" name="bgColor"/>                       
+        <attr format="color" name="smallScaleColor"/>               
+        <attr format="color" name="midScaleColor"/>                 
+        <attr format="color" name="largeScaleColor"/>               
+        <attr format="color" name="scaleNumColor"/>                 
+        <attr format="color" name="resultNumColor"/>                
+        <attr format="dimension" name="smallScaleStroke"/>          
+        <attr format="dimension" name="midScaleStroke"/>            
+        <attr format="dimension" name="largeScaleStroke"/>          
+        <attr format="dimension" name="resultNumTextSize"/>         
+        <attr format="dimension" name="scaleNumTextSize"/>          
+        <attr format="boolean" name="showScaleResult"/>             
+        <attr format="boolean" name="isBgRoundRect"/>               
+        <attr format="integer" name="scaleLimit"/>                
+        <attr format="string" name="unit"/>                         
+        <attr format="color" name="unitColor"/>                     
+        <attr format="dimension" name="unitTextSize"/>              
+
+    </declare-styleable></file></source><source path="/Users/xieshangwu/code/PermissionTest/ruler/build/generated/res/rs/debug"/><source path="/Users/xieshangwu/code/PermissionTest/ruler/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/xieshangwu/code/PermissionTest/ruler/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/xieshangwu/code/PermissionTest/ruler/src/debug/res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="RulerView">
+        <attr format="dimension" name="rulerHeight"/>               
+        <attr format="dimension" name="rulerToResultgap"/>          
+        <attr format="dimension" name="scaleGap"/>                  
+        <attr format="integer" name="scaleCount"/>                  
+        <attr format="integer" name="firstScale"/>                    
+        <attr format="integer" name="maxScale"/>                    
+        <attr format="integer" name="minScale"/>                    
+        <attr format="color" name="bgColor"/>                       
+        <attr format="color" name="smallScaleColor"/>               
+        <attr format="color" name="midScaleColor"/>                 
+        <attr format="color" name="largeScaleColor"/>               
+        <attr format="color" name="scaleNumColor"/>                 
+        <attr format="color" name="resultNumColor"/>                
+        <attr format="dimension" name="smallScaleStroke"/>          
+        <attr format="dimension" name="midScaleStroke"/>            
+        <attr format="dimension" name="largeScaleStroke"/>          
+        <attr format="dimension" name="resultNumTextSize"/>         
+        <attr format="dimension" name="scaleNumTextSize"/>          
+        <attr format="boolean" name="showScaleResult"/>             
+        <attr format="boolean" name="isBgRoundRect"/>               
+        <attr format="integer" name="scaleLimit"/>                
+        <attr format="string" name="unit"/>                         
+        <attr format="color" name="unitColor"/>                     
+        <attr format="dimension" name="unitTextSize"/>              
+
+    </declare-styleable></configuration></mergedItems></merger>
